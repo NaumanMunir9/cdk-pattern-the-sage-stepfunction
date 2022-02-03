@@ -144,6 +144,20 @@ export class TheSageStepfunctionStack extends Stack {
       resultPath: "$.ReserveFlightError",
     });
 
+    // Cancel Flight
+    const cancelFlight = new stepFunctionsTasks.LambdaInvoke(
+      this,
+      "CancelFlight",
+      {
+        lambdaFunction: cancelFlightLambda,
+        outputPath: "$.CancelFlightResult",
+      }
+    )
+      .addRetry({
+        maxAttempts: 3,
+      })
+      .next(cancelHotel);
+
     // ==========================================================================
     /**
      * Helper function to create a lambda function
