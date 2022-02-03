@@ -231,6 +231,35 @@ export class TheSageStepfunctionStack extends Stack {
 
     // ==========================================================================
     /**
+     * State Machine
+     * The state machine is the main resource in AWS Step Functions
+     * It is the main entry point for the workflow
+     */
+    const stateMachine = new stepFunctions.StateMachine(this, "StateMachine", {
+      definition,
+      timeout: cdk.Duration.minutes(3),
+    });
+
+    // ==========================================================================
+    /**
+     * Saga Lambda Function
+     */
+    const sagaLambda = new lambda.Function(this, "SagaLambda", {
+      runtime: lambda.Runtime.NODEJS_14_X,
+      handler: "sagaLambda.handler",
+      code: lambda.Code.fromAsset("lambda"),
+      environment: {
+        STATE_MACHINE_ARN: stateMachine.stateMachineArn,
+      },
+    });
+
+    /**
+     * Grant the lambda permission to invoke the state machine
+     */
+    stateMachine.grantStartExecution(sagaLambda);
+
+    // ==========================================================================
+    /**
      * Helper function to create a lambda function
      * @param scope
      * @param id
