@@ -60,6 +60,26 @@ export class TheSageStepfunctionStack extends Stack {
       bookingTable
     );
 
+    // Hotel Lambdas
+    let reserveHotelLambda = this.createLambdaFunction(
+      this,
+      "ReserveHotelLambda",
+      "hotel/reserveHotel.handler",
+      bookingTable
+    );
+    let confirmHotelLambda = this.createLambdaFunction(
+      this,
+      "ConfirmHotelLambda",
+      "hotel/confirmHotel.handler",
+      bookingTable
+    );
+    let cancelHotelLambda = this.createLambdaFunction(
+      this,
+      "CancelHotelLambda",
+      "hotel/cancelHotel.handler",
+      bookingTable
+    );
+
     // ==========================================================================
     /**
      * Helper function to create a lambda function
