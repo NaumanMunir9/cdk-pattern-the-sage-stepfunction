@@ -119,6 +119,18 @@ export class TheSageStepfunctionStack extends Stack {
     });
 
     // Cancel Hotel
+    const cancelHotel = new stepFunctionsTasks.LambdaInvoke(
+      this,
+      "CancelHotel",
+      {
+        lambdaFunction: cancelHotelLambda,
+        outputPath: "$.CancelHotelResult",
+      }
+    )
+      .addRetry({
+        maxAttempts: 3,
+      })
+      .next(bookingFailed);
 
     // ==========================================================================
     /**
