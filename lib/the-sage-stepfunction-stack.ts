@@ -173,6 +173,20 @@ export class TheSageStepfunctionStack extends Stack {
       resultPath: "$.TakePaymentError",
     });
 
+    // refund payment
+    const refundPayment = new stepFunctionsTasks.LambdaInvoke(
+      this,
+      "RefundPayment",
+      {
+        lambdaFunction: refundPaymentLambda,
+        outputPath: "$.RefundPaymentResult",
+      }
+    )
+      .addRetry({
+        maxAttempts: 3,
+      })
+      .next(cancelFlight);
+
     // ==========================================================================
     /**
      * Helper function to create a lambda function
