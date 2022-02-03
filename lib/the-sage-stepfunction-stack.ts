@@ -96,6 +96,18 @@ export class TheSageStepfunctionStack extends Stack {
 
     // ==========================================================================
     /**
+     * Step Functions
+     * The Process follows a strict order
+     * 1) Reserve Flight and Hotel
+     * 2) Take Payment
+     * 3) Confirm Flight and Hotel
+     */
+    // Two End States
+    const bookingFailed = new stepFunctions.Fail(this, "BookingFailed");
+    const bookingSucceeded = new stepFunctions.Pass(this, "BookingSucceeded");
+
+    // ==========================================================================
+    /**
      * Helper function to create a lambda function
      * @param scope
      * @param id
