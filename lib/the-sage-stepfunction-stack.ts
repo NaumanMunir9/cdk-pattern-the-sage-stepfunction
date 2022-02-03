@@ -106,6 +106,20 @@ export class TheSageStepfunctionStack extends Stack {
     const bookingFailed = new stepFunctions.Fail(this, "BookingFailed");
     const bookingSucceeded = new stepFunctions.Pass(this, "BookingSucceeded");
 
+    // Reserve Hotel
+    const reserveHotel = new stepFunctionsTasks.LambdaInvoke(
+      this,
+      "ReserveHotel",
+      {
+        lambdaFunction: reserveHotelLambda,
+        outputPath: "$.ReserveHotelResult",
+      }
+    ).addCatch(cancelHotelLambda, {
+      resultPath: "$.ReserveHotelError",
+    });
+
+    // Cancel Hotel
+
     // ==========================================================================
     /**
      * Helper function to create a lambda function
