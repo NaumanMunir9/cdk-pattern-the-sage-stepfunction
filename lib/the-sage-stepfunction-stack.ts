@@ -8,6 +8,7 @@ import * as stepFunctions from "aws-cdk-lib/aws-stepfunctions";
 import * as stepFunctionsTasks from "aws-cdk-lib/aws-stepfunctions-tasks";
 
 export class TheSageStepfunctionStack extends Stack {
+  createLambdaFunction: any;
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
@@ -39,5 +40,52 @@ export class TheSageStepfunctionStack extends Stack {
      * 2) Hotel booking
      * 3) Payment for the trip
      */
+    // Flight Lambdas
+    let reserveFlightLambda = this.createLambdaFunction(
+      this,
+      "ReserveFlightLambda",
+      "flights/reserveFlight.handler",
+      bookingTable
+    );
+    let confirmFlightLambda = this.createLambdaFunction(
+      this,
+      "ConfirmFlightLambda",
+      "flights/confirmFlight.handler",
+      bookingTable
+    );
+    let cancelFlightLambda = this.createLambdaFunction(
+      this,
+      "CancelFlightLambda",
+      "flights/cancelFlight.handler",
+      bookingTable
+    );
+
+    // ==========================================================================
+    /**
+     * Helper function to create a lambda function
+     * @param scope
+     * @param id
+     * @param handler
+     * @param table
+     */
+    this.createLambdaFunction = (
+      scope: Construct,
+      id: string,
+      handler: string,
+      table: dynamodb.Table
+    ) => {
+      let lambdaFunction = new lambda.Function(scope, id, {
+        code: lambda.Code.fromAsset("lambda"),
+        handler: handler,
+        runtime: lambda.Runtime.NODEJS_14_X,
+        environment: {
+          BOOKING_TABLE: table.tableName,
+        },
+      });
+
+      table.grantReadWriteData(lambdaFunction);
+
+      return lambdaFunction;
+    };
   }
 }
