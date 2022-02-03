@@ -132,6 +132,18 @@ export class TheSageStepfunctionStack extends Stack {
       })
       .next(bookingFailed);
 
+    // Reserve Flight
+    const reserveFlight = new stepFunctionsTasks.LambdaInvoke(
+      this,
+      "ReserveFlight",
+      {
+        lambdaFunction: reserveFlightLambda,
+        outputPath: "$.ReserveFlightResult",
+      }
+    ).addCatch(cancelFlightLambda, {
+      resultPath: "$.ReserveFlightError",
+    });
+
     // ==========================================================================
     /**
      * Helper function to create a lambda function
