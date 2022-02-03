@@ -80,6 +80,20 @@ export class TheSageStepfunctionStack extends Stack {
       bookingTable
     );
 
+    // Payment Lambdas
+    let takePaymentLambda = this.createLambdaFunction(
+      this,
+      "TakePaymentLambda",
+      "payment/takePayment.handler",
+      bookingTable
+    );
+    let refundPaymentLambda = this.createLambdaFunction(
+      this,
+      "RefundPaymentLambda",
+      "payment/refundPayment.handler",
+      bookingTable
+    );
+
     // ==========================================================================
     /**
      * Helper function to create a lambda function
