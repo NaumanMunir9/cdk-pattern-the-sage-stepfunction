@@ -158,6 +158,21 @@ export class TheSageStepfunctionStack extends Stack {
       })
       .next(cancelHotel);
 
+    /**
+     * Payment
+     */
+    // Take Payment
+    const takePayment = new stepFunctionsTasks.LambdaInvoke(
+      this,
+      "TakePayment",
+      {
+        lambdaFunction: takePaymentLambda,
+        outputPath: "$.TakePaymentResult",
+      }
+    ).addCatch(refundPaymentLambda, {
+      resultPath: "$.TakePaymentError",
+    });
+
     // ==========================================================================
     /**
      * Helper function to create a lambda function
