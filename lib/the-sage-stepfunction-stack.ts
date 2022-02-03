@@ -219,6 +219,18 @@ export class TheSageStepfunctionStack extends Stack {
 
     // ==========================================================================
     /**
+     * Step Functions Chain
+     * A collection of states to chain onto
+     */
+    const definition = stepFunctions.Chain.start(reserveHotel)
+      .next(reserveFlight)
+      .next(takePayment)
+      .next(confirmHotel)
+      .next(confirmFlight)
+      .next(bookingSucceeded);
+
+    // ==========================================================================
+    /**
      * Helper function to create a lambda function
      * @param scope
      * @param id
