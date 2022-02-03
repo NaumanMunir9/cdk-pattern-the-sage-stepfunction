@@ -260,6 +260,15 @@ export class TheSageStepfunctionStack extends Stack {
 
     // ==========================================================================
     /**
+     * API Gateway
+     * Defines an API Gateway REST API with AWS Lambda proxy integration
+     */
+    const api = new apigateway.LambdaRestApi(this, "Api", {
+      handler: sagaLambda,
+    });
+
+    // ==========================================================================
+    /**
      * Helper function to create a lambda function
      * @param scope
      * @param id
