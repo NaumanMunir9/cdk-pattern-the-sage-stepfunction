@@ -106,6 +106,9 @@ export class TheSageStepfunctionStack extends Stack {
     const bookingFailed = new stepFunctions.Fail(this, "BookingFailed");
     const bookingSucceeded = new stepFunctions.Pass(this, "BookingSucceeded");
 
+    /**
+     * Reserve Flight and Hotel
+     */
     // Reserve Hotel
     const reserveHotel = new stepFunctionsTasks.LambdaInvoke(
       this,
@@ -186,6 +189,21 @@ export class TheSageStepfunctionStack extends Stack {
         maxAttempts: 3,
       })
       .next(cancelFlight);
+
+    /**
+     * Confirm Flight and Hotel
+     */
+    // Confirm Hotel
+    const confirmHotel = new stepFunctionsTasks.LambdaInvoke(
+      this,
+      "ConfirmHotel",
+      {
+        lambdaFunction: confirmHotelLambda,
+        outputPath: "$.ConfirmHotelBookingResult",
+      }
+    ).addCatch(refundPayment, {
+      resultPath: "$.ConfirmHotelBookingError",
+    });
 
     // ==========================================================================
     /**
