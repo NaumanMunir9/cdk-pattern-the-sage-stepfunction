@@ -205,6 +205,18 @@ export class TheSageStepfunctionStack extends Stack {
       resultPath: "$.ConfirmHotelBookingError",
     });
 
+    // Confirm Flight
+    const confirmFlight = new stepFunctionsTasks.LambdaInvoke(
+      this,
+      "ConfirmFlight",
+      {
+        lambdaFunction: confirmFlightLambda,
+        outputPath: "$.ConfirmFlightBookingResult",
+      }
+    ).addCatch(refundPayment, {
+      resultPath: "$.ConfirmFlightBookingError",
+    });
+
     // ==========================================================================
     /**
      * Helper function to create a lambda function
